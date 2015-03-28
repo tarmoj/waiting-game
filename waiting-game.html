@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Waiting-game</title>
+    <meta content="Tarmo Johannes" id="author">
+	
+	<link type="text/css" rel="stylesheet" href="soundgames.css">
+	
+	<script src="kinetic-v5.1.0.js"></script> <!-- image movement etc-->
+    <script src="ws-functions.js"></script> <!-- websocket functions -->
+    
+    <script defer="defer">
+    
+ 
+	
+	
+
+	function onMessage(evt)
+	{
+		// does server send any messages at all?
+		writeToScreen("Message from server: " + evt.data + '\n');
+ 		var mess_array = evt.data.split(" ");
+ 		//console.log(mess_array[0]);
+ 				
+	}
+
+	
+  
+  // UI functions --------------------------------------------------------
+		
+	function getRadioValue(name) {
+		var elements = document.getElementsByName(name);
+		var radioValue = -1; // signals that none of the buttons was selected
+		for (var i=0;  i<elements.length; i++) {
+			if (elements[i].checked) {
+				radioValue = elements[i].value;
+			}
+		}
+		return radioValue;
+	}
+	
+	function wait(duration) { // disables play button for given time in milliseconds
+		//document.myform.sendButton.disabled = true;
+		document.getElementById("waiting").style.visibility = "visible";
+		setTimeout(function(){ 
+			document.myform.sendButton.disabled = false;
+			document.getElementById("waiting").style.visibility = "hidden";
+		}, duration);
+	}
+	
+	function tester() {
+		var types = ["water","sticks","stones","wind"];
+		var type = types[Math.floor(Math.random()*4)];
+		var message = "play,"+type+","+Math.random().toString(); // format: <sound type> , <pan>
+		doSend(message);
+
+		setTimeout(function(){ tester()},500+Math.random()*3000);
+
+		
+	}
+	
+	window.onload = function(){
+		var sendButton = document.getElementById("sendButton");
+		//sendButton.disabled = true;
+		wait(5000); //not to let play immediately on reload
+	
+		
+		doConnect(); // init websocket on start; suppose the server is ready
+		
+		
+		sendButton.onclick = function() {
+			var message = "play,"+getRadioValue("sound")+","+document.myform.pan.value; // format: <sound type> , <pan>
+			console.log(message);
+			doSend(message);
+			sendButton.disabled = true; // don't let to play again for some time
+			wait(2000 + Math.random()*15000);
+			
+		}
+		
+	};
+		
+	</script>
+  </head>
+  <body>
+    <span style='margin-left:440px'><small><i><a href="waitng-game_est.html">Eesti</a></i></small></span>
+    <h1>WAITING-GAME</h1>
+    <i>Choose a sound and play it. Wait and listen until you can play the next one. Then wait a bit even longer. And listen.</i><br>
+    <form name="myform">
+
+   <br>
+	<br>
+	<table style="width:95%">
+	<tr  style="text-align:center">
+		<td></td>
+		<td>
+		<button type="button" class="button" id="sendButton" style="width:100px; height:60px;" disabled>Play</button>
+		</td>
+	</tr>
+	<tr  style="text-align:center">
+		<td></td>
+		<td>
+		<span id="waiting" style='visibility:hidden; color:red'><i>Wait</i></span>
+		</td>
+	</tr>
+	<tr  style="text-align:center">
+		<td width="36px"><img src="speaker.png" style="width:64px; height:64px"></td>
+		<td>	
+<input type="range" class="range" id="pan" min=0 max=1 step=0.01 value=0.1 style="width:90%"> 
+		</td>
+		<td width="36px"><img src="speaker.png" style="width:64px; height:64px"></td>	
+	</tr>
+	</table>
+	<br>
+	<table style="width:95%">
+		<tr  style="text-align:center">
+			<td> <input id="water" value="water" name="sound" type="radio" checked> Waterdrops</td>
+			<td> <input id="stones" value="stones" name="sound" type="radio"> Stones</td>
+			<td> <input id="sticks" value="sticks" name="sound" type="radio"> Sticks</td>
+			<td> <input id="wind" value="wind" name="sound" type="radio"> Wind</td>
+		</tr>
+		<tr style="text-align:center">
+			<td> <img src="water-drops.jpg" onclick='document.myform.water.checked = "true"'> </td>
+			<td> <img src="stones.jpg" onclick='document.myform.stones.checked = "true"'> </td>
+			<td> <img src="sticks.jpg" onclick='document.myform.sticks.checked = "true"'> </td>
+			<td> <img src="wind.jpg" onclick='document.myform.wind.checked = "true"'> </td>
+		</tr>
+	</table>
+    
+    <br>
+	<br>
+    Server address: <input value="ws://192.168.1.199:12012/ws" id="url" type="text"><br>
+    <button type="button" id="connectButton" onclick="doConnect();">Connect</button>
+    <!--<button type="button" id="disconnectButton">Disonnect</button>-->
+    <br>
+    <br>
+    <p><textarea id="outputtext" rows="5" cols="30" readonly></textarea> </p>
+    
+    
+    </form>
+   
+   
+   
+   
+  </body>
+</html>
