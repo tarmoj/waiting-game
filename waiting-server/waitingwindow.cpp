@@ -29,3 +29,15 @@ void WaitingWindow::on_volumeSlider_valueChanged(int value)
 {
 	cs->setChannel("volume",(MYFLT) value/100.0);
 }
+
+void WaitingWindow::on_waterdropCheckBox_toggled(bool checked)
+{
+	QString state = (checked) ? "enable" : "disable";
+	wsServer->send2all("set water "+ state); // syntax: disabled <html-id> <true|false>
+}
+
+void WaitingWindow::on_stonesCheckBox_toggled(bool checked)
+{
+	QString state = (checked) ? "enable" : "disable";
+	wsServer->send2all("set stones "+ state);
+}

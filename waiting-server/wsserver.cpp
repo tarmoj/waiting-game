@@ -131,3 +131,10 @@ void WsServer::sendMessage(QWebSocket *socket, QString message )
 
 }
 
+void WsServer::send2all(QString message)
+{
+	foreach (QWebSocket *socket, m_clients) {
+		socket->sendTextMessage(message);
+	}
+}
+

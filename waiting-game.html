@@ -22,6 +22,20 @@
 		writeToScreen("Message from server: " + evt.data + '\n');
  		var mess_array = evt.data.split(" ");
  		//console.log(mess_array[0]);
+ 		
+ 		if (mess_array[0] == "set") { // comes in as range low disable/enable - NB! user can break it when does reload	
+			var element = document.getElementById(mess_array[1]);
+			if (mess_array[2]=="enable") {
+				element.disabled = false;
+			}	
+			if (mess_array[2]=="disable") {
+				element.disabled = true;
+				if (element.checked)
+					element.checked = false;
+			}
+ 		}
+ 		
+ 		
  				
 	}
 
