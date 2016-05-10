@@ -21,6 +21,17 @@ public slots:
 	void on_volumeSlider_valueChanged(int value);
 	void setClientsCount(int clientsCount);
 
+private slots:
+	void on_waterdropCheckBox_toggled(bool checked);
+
+	void on_stonesCheckBox_toggled(bool checked);
+
+	void on_stickCheckBox_toggled(bool checked);
+
+	void on_windCheckBox_toggled(bool checked);
+
+	void on_fluteCheckBox_toggled(bool checked);
+
 private:
 	Ui::WaitingWindow *ui;
 	CsEngine *cs;

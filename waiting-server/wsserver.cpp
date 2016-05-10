@@ -42,6 +42,7 @@ void WsServer::onNewConnection()
     connect(pSocket, &QWebSocket::disconnected, this, &WsServer::socketDisconnected);
 
     m_clients << pSocket;
+	sendStates(pSocket);
 
     emit newConnection(m_clients.count());
 }
@@ -64,10 +65,13 @@ void WsServer::processTextMessage(QString message)
 //	if (messageParts[0]=="continue")
 //		setContinue();
 
-	if (messageParts[0]=="play") { // comes in as "play,water|stones|sticks|wind,<pan>"
+	if (messageParts[0]=="play") { // comes in as "play,water|stones|sticks|wind|flute,<pan>"
 		QString type = messageParts[1];
 		double pan = messageParts[2].toDouble();
-
+		QString scoreLine;
+		if (type=="flute") {
+			scoreLine.sprintf("i \"flute\" 0 15 %f ", pan);
+		} else {
 		// get filename as random from the subfolder according to the sound type
 		QString path = "../sounds/"+type + "/";
 		QDir directory(path);
@@ -75,8 +79,9 @@ void WsServer::processTextMessage(QString message)
 		QString filename = path + files[qrand()%files.count()];
 		//qDebug()<<"File selected: "<<filename;
 
-		QString scoreLine;
+
 		scoreLine.sprintf("i \"play\" 0 5 \"%s\" %f ",filename.toLocal8Bit().data(), pan);
+		}
 		qDebug()<< scoreLine;
 		emit newEvent(scoreLine);
 	}
@@ -129,5 +134,21 @@ void WsServer::sendMessage(QWebSocket *socket, QString message )
     }
     socket->sendTextMessage(message);
 
+}
+
+void WsServer::send2all(QString message)
+{
+	foreach (QWebSocket *socket, m_clients) {
+		socket->sendTextMessage(message);
+	}
+}
+
+void WsServer::sendStates(QWebSocket *socket) // if a socket connects, send it, what sounds are enabled, what not.
+{
+	socket->sendTextMessage( QString("set water ") + (waterActive ? "enable" : "disable") );
+	socket->sendTextMessage( QString("set stones ") + (stonesActive ? "enable" : "disable") );
+	socket->sendTextMessage( QString("set sticks ") + (sticksActive ? "enable" : "disable") );
+	socket->sendTextMessage( QString("set wind ") + (windActive ? "enable" : "disable") );
+	socket->sendTextMessage( QString("set flute ") + (fluteActive ? "enable" : "disable") );
 }
 

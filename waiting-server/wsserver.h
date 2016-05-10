@@ -22,10 +22,11 @@ class WsServer : public QObject
 public:
     explicit WsServer(quint16 port, QObject *parent = NULL);
     ~WsServer();
-
+	bool waterActive, stonesActive, sticksActive, windActive, fluteActive;
 	void sendMessage(QWebSocket *socket, QString message);
 	void setPaused(bool paused);
 	void send2all(QString message);
+	void sendStates(QWebSocket *socket);
 
 Q_SIGNALS:
     void closed();

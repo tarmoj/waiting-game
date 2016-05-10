@@ -22,6 +22,23 @@
 		writeToScreen("Message from server: " + evt.data + '\n');
  		var mess_array = evt.data.split(" ");
  		//console.log(mess_array[0]);
+ 		
+ 		if (mess_array[0] == "set") { // comes in as range low disable/enable - NB! user can break it when does reload	
+			var element = document.getElementById(mess_array[1]);
+			var picture = document.getElementById(mess_array[1]+"-picture");
+			if (mess_array[2]=="enable") {
+				element.disabled = false;
+				picture.style.opacity = 1;
+			}	
+			if (mess_array[2]=="disable") {
+				element.disabled = true;
+				picture.style.opacity = 0.1;
+				if (element.checked)
+					element.checked = false;
+			}
+ 		}
+ 		
+ 		
  				
 	}
 
@@ -50,8 +67,8 @@
 	}
 	
 	function tester() {
-		var types = ["water","sticks","stones","wind"];
-		var type = types[Math.floor(Math.random()*4)];
+		var types = ["water","sticks","stones","wind", "flute"];
+		var type = types[Math.floor(Math.random()*5)];
 		var message = "play,"+type+","+Math.random().toString(); // format: <sound type> , <pan>
 		doSend(message);
 
@@ -70,6 +87,10 @@
 		
 		
 		sendButton.onclick = function() {
+			if (getRadioValue("sound")==-1) {
+                            alert("Nothing selected");
+                            return;
+			}
 			var message = "play,"+getRadioValue("sound")+","+document.myform.pan.value; // format: <sound type> , <pan>
 			console.log(message);
 			doSend(message);
@@ -90,7 +111,7 @@
 
    <br>
 	<br>
-	<table style="width:95%">
+	<table style="width:100%">
 	<tr  style="text-align:center">
 		<td></td>
 		<td>
@@ -118,12 +139,16 @@
 			<td> <input id="stones" value="stones" name="sound" type="radio"> Stones</td>
 			<td> <input id="sticks" value="sticks" name="sound" type="radio"> Sticks</td>
 			<td> <input id="wind" value="wind" name="sound" type="radio"> Wind</td>
+			<td> <input id="flute" value="flute" name="sound" type="radio"> Flute </td>
 		</tr>
 		<tr style="text-align:center">
-			<td> <img src="water-drops.jpg" onclick='document.myform.water.checked = "true"'> </td>
-			<td> <img src="stones.jpg" onclick='document.myform.stones.checked = "true"'> </td>
-			<td> <img src="sticks.jpg" onclick='document.myform.sticks.checked = "true"'> </td>
-			<td> <img src="wind.jpg" onclick='document.myform.wind.checked = "true"'> </td>
+			<td> <img id="water-picture" src="water-drops.jpg" onclick='document.myform.water.checked = "true"'> </td>
+			<td> <img id="stones-picture" src="stones.jpg" onclick='document.myform.stones.checked = "true"'> </td>
+			<td> <img id="sticks-picture" src="sticks.jpg" onclick='document.myform.sticks.checked = "true"'> </td>
+			<td> <img id="wind-picture" src="wind.jpg"
+			onclick='document.myform.wind.checked = "true"'> </td>
+			<td> <img id="flute-picture" src="cb-flute.jpg"
+			onclick='document.myform.flute.checked = "true"'> </td>
 		</tr>
 	</table>
     
