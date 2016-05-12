@@ -20,10 +20,23 @@ WaitingWindow::WaitingWindow(QWidget *parent) :
 
 }
 
+
+
 WaitingWindow::~WaitingWindow()
 {
 	delete ui;
 }
+
+void WaitingWindow::closeEvent(QCloseEvent *event)
+{
+	event->accept();
+	qDebug("Window closing");
+	cs->stop();
+	cs->deleteLater();
+
+
+}
+
 
 void WaitingWindow::setClientsCount(int clientsCount)
 {
@@ -70,4 +83,12 @@ void WaitingWindow::on_fluteCheckBox_toggled(bool checked)
 	wsServer->fluteActive = checked;
 	QString state = (checked) ? "enable" : "disable";
 	wsServer->send2all("set flute "+ state);
+}
+
+void WaitingWindow::on_checkBox_toggled(bool checked)
+{
+	wsServer->onlyOneEventAllowed = checked;
+	if (checked) {
+		wsServer->emptyIPs();
+	}
 }

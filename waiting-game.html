@@ -5,9 +5,8 @@
     <title>Waiting-game</title>
     <meta content="Tarmo Johannes" id="author">
 	
-	<link type="text/css" rel="stylesheet" href="soundgames.css">
+    <link type="text/css" rel="stylesheet" href="soundgames.css">
 	
-	<script src="kinetic-v5.1.0.js"></script> <!-- image movement etc-->
     <script src="ws-functions.js"></script> <!-- websocket functions -->
     
     <script defer="defer">
@@ -32,9 +31,10 @@
 			}	
 			if (mess_array[2]=="disable") {
 				element.disabled = true;
+				element.checked = false;
 				picture.style.opacity = 0.1;
-				if (element.checked)
-					element.checked = false;
+				//if (element.checked)
+				//	element.checked = false;
 			}
  		}
  		
@@ -78,9 +78,15 @@
 	}
 	
 	window.onload = function(){
+		document.myform.water.disabled=false; // otherwise can remember from previous view that something is disabled
+		document.myform.stones.disabled=false;
+		document.myform.sticks.disabled=false;
+		document.myform.wind.disabled=false;
+		document.myform.flute.disabled=false;
+		
 		var sendButton = document.getElementById("sendButton");
 		//sendButton.disabled = true;
-		wait(5000); //not to let play immediately on reload
+		wait(2000); //not to let play immediately on reload // was 5000
 	
 		
 		doConnect(); // init websocket on start; suppose the server is ready
@@ -95,7 +101,8 @@
 			console.log(message);
 			doSend(message);
 			sendButton.disabled = true; // don't let to play again for some time
-			wait(2000 + Math.random()*15000);
+			//wait(2000 + Math.random()*15000); // for first version
+			wait(2000);
 			
 		}
 		
@@ -142,13 +149,17 @@
 			<td> <input id="flute" value="flute" name="sound" type="radio"> Flute </td>
 		</tr>
 		<tr style="text-align:center">
-			<td> <img id="water-picture" src="water-drops.jpg" onclick='document.myform.water.checked = "true"'> </td>
-			<td> <img id="stones-picture" src="stones.jpg" onclick='document.myform.stones.checked = "true"'> </td>
-			<td> <img id="sticks-picture" src="sticks.jpg" onclick='document.myform.sticks.checked = "true"'> </td>
+			<td> <img id="water-picture" src="water-drops.jpg" 
+			onclick='if (!document.myform.water.disabled) document.myform.water.checked = "true"'> </td>
+			<td> <img id="stones-picture" src="stones.jpg" 
+			onclick='if (!document.myform.stones.disabled) document.myform.stones.checked = "true"'> </td>
+			<td> <img id="sticks-picture" src="sticks.jpg" 
+			onclick='if (!document.myform.sticks.disabled)
+			document.myform.sticks.checked = "true"'> </td>
 			<td> <img id="wind-picture" src="wind.jpg"
-			onclick='document.myform.wind.checked = "true"'> </td>
+			onclick='if (!document.myform.wind.disabled) document.myform.wind.checked = "true"'> </td>
 			<td> <img id="flute-picture" src="cb-flute.jpg"
-			onclick='document.myform.flute.checked = "true"'> </td>
+			onclick='if (!document.myform.flute.disabled)  document.myform.flute.checked = "true"'> </td>
 		</tr>
 	</table>
     
@@ -159,7 +170,7 @@
     <!--<button type="button" id="disconnectButton">Disonnect</button>-->
     <br>
     <br>
-    <p><textarea id="outputtext" rows="5" cols="30" readonly></textarea> </p>
+    <p><textarea hidden id="outputtext" rows="5" cols="30" readonly></textarea> </p>
     
     
     </form>

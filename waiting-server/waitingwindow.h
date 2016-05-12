@@ -4,6 +4,7 @@
 #include "wsserver.h"
 
 #include <QMainWindow>
+#include <QCloseEvent>
 
 namespace Ui {
 class WaitingWindow;
@@ -17,6 +18,8 @@ public:
 	explicit WaitingWindow(QWidget *parent = 0);
 	~WaitingWindow();
 
+
+	void closeEvent(QCloseEvent *event);
 public slots:
 	void on_volumeSlider_valueChanged(int value);
 	void setClientsCount(int clientsCount);
@@ -31,6 +34,8 @@ private slots:
 	void on_windCheckBox_toggled(bool checked);
 
 	void on_fluteCheckBox_toggled(bool checked);
+
+	void on_checkBox_toggled(bool checked);
 
 private:
 	Ui::WaitingWindow *ui;

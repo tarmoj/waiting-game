@@ -22,11 +22,12 @@ class WsServer : public QObject
 public:
     explicit WsServer(quint16 port, QObject *parent = NULL);
     ~WsServer();
-	bool waterActive, stonesActive, sticksActive, windActive, fluteActive;
+	bool waterActive, stonesActive, sticksActive, windActive, fluteActive, onlyOneEventAllowed;
 	void sendMessage(QWebSocket *socket, QString message);
 	void setPaused(bool paused);
 	void send2all(QString message);
 	void sendStates(QWebSocket *socket);
+	void emptyIPs();
 
 Q_SIGNALS:
     void closed();
@@ -43,7 +44,8 @@ private Q_SLOTS:
 
 private:
     QWebSocketServer *m_pWebSocketServer;
-    QList<QWebSocket *> m_clients;
+	QList<QWebSocket *> m_clients;
+	QStringList waterIPs, stoneIPs, stickIPs, windIPs, fluteIPs;
 	//void getFilenames();
 	//QHash<QString, int>  clientsHash;
 	//bool pauseIsOn;
