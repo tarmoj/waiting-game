@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <meta name="viewport" content="width=600, initial-scale=0.7, maximum-scale=1.2, minimum-scale=0.2, user-scalable=yes" />
     <title>Waiting-game</title>
     <meta content="Tarmo Johannes" id="author">
 	
@@ -86,7 +87,7 @@
 		
 		var sendButton = document.getElementById("sendButton");
 		//sendButton.disabled = true;
-		wait(2000); //not to let play immediately on reload // was 5000
+		//wait(2000); //not to let play immediately on reload // was 5000
 	
 		
 		doConnect(); // init websocket on start; suppose the server is ready
@@ -113,7 +114,10 @@
   <body>
 <!--    <span style='margin-left:440px'><small><i><a href="waitng-game_est.html">Eesti</a></i></small></span>-->
     <h1>WAITING-GAME</h1>
-    <i>Choose a sound and play it. Wait and listen until you can play the next one. Then wait a bit even longer. And listen.</i><br>
+    <i>Choose a sound and direction you want to hear it from (left<->right).<br>
+    Wait for right moment and play it.<br>
+    During the game you can play each type of sound only once.<br>
+    Wait and listen.</i><br>
     <form name="myform">
 
    <br>
@@ -122,7 +126,7 @@
 	<tr  style="text-align:center">
 		<td></td>
 		<td>
-		<button type="button" class="button" id="sendButton" style="width:100px; height:60px;" disabled>Play</button>
+		<button type="button" class="button" id="sendButton" style="width:100px; height:60px;" >Play</button>
 		</td>
 	</tr>
 	<tr  style="text-align:center">
@@ -165,7 +169,7 @@
     
     <br>
 	<br>
-    Server address: <input value="ws://192.168.1.199:12012/ws" id="url" type="text"><br>
+    Server address: <input value="ws://192.168.1.220:12012/ws" id="url" type="text"><br>
     <button type="button" id="connectButton" onclick="doConnect();">Connect</button>
     <!--<button type="button" id="disconnectButton">Disonnect</button>-->
     <br>
