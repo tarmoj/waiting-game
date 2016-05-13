@@ -23,10 +23,8 @@ instr play
 	p3 filelen Sfile
 	ipan = p5
 	asig diskin2 Sfile, random:i(0.95,1.05)
-	asig *= linen:a(1,0.02,p3,0.05)
-	kvolume chnget "volume"
-	kvolume port kvolume, 0.02, chnget:i("volume") 
-	aL, aR pan2 asig*kvolume , ipan
+	asig *= linen:a(1,0.02,p3,0.05) 
+	aL, aR pan2 asig , ipan
 	;outs aL, aR
 	ga1 += aL
 	ga2 += aR
@@ -39,12 +37,13 @@ giFluteFreqs ftgen 0,0,16,-2,1,2,3,4,5,6,7,8
 giFluteAmps ftgen 0,0,16,-2, 1,0.5,0.3,0.2,0.1,0.05,0.03,0.02
 instr flute
 	ipan = p4
+	iamp = 0.5
 	; TODO: tämber muutus ajas -  chebyshev?
 	kline line 1,p3,0
-	anoise = pinkish(rnd(0.05))
+	anoise = pinkish(rnd(0.03))
 	anoise butterlp anoise*kline, random:i(1000,8000) ; somewhat different noise, decay during note
 	ioct = int(random:i(1,2.99))
-	ideviation = cent(random:i(-20,20))
+	ideviation = cent(random:i(0,40)) ; allow higher since in a=440
 	iattack random 0.05,1
 	idecay = iattack * random:i(0.7,1.5)
 	isustain random 0.3,0.8
@@ -66,7 +65,7 @@ instr flute
 	asig chebyshevpoly asig, 0, kh1, kh2, kh3, kh4, kh5,kh6
 	
 	
-	aout = (anoise+asig*0.3) * aenv
+	aout = (anoise+asig*0.3) * aenv*iamp
 	aL, aR pan2 aout,ipan
 	;outs aL, aR
 	ga1 += aL
@@ -78,10 +77,14 @@ instr reverb_
 	irvbamount = 0.01
 	ihdif = 0.6
 	idrywet = 0.5
-	arvbL reverb2 ga1*irvbamount, irvbtime, ihdif
-	arvbR reverb2 ga2*irvbamount, irvbtime, ihdif
+	iroomsize = 0.6
+	kvolume chnget "volume"
+	kvolume port kvolume, 0.02, chnget:i("volume")
+	arvbL, arvbR freeverb ga1*irvbamount, ga2*irvbamount,iroomsize, ihdif 
+	;arvbL reverb2 ga1*irvbamount, irvbtime, ihdif
+	;arvbR reverb2 ga2*irvbamount, irvbtime, ihdif
 	
-	outs ntrpol(arvbL,ga1,idrywet), ntrpol(arvbR,ga2,idrywet)
+	outs ntrpol(arvbL,ga1,idrywet)*kvolume, ntrpol(arvbR,ga2,idrywet)*kvolume
 	ga1=0
 	ga2=0
 endin
@@ -95,8 +98,8 @@ endin
  <objectName/>
  <x>0</x>
  <y>0</y>
- <width>0</width>
- <height>0</height>
+ <width>416</width>
+ <height>371</height>
  <visible>true</visible>
  <uuid/>
  <bgcolor mode="nobackground">
@@ -121,7 +124,7 @@ endin
   <image>/</image>
   <eventLine>i "flute" 0 15</eventLine>
   <latch>false</latch>
-  <latched>true</latched>
+  <latched>false</latched>
  </bsbObject>
  <bsbObject type="BSBScope" version="2">
   <objectName/>
