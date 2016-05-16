@@ -2,12 +2,17 @@
 <html>
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type">
-    <meta name="viewport" content="width=600, initial-scale=0.7, maximum-scale=1.2, minimum-scale=0.2, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Waiting-game</title>
     <meta content="Tarmo Johannes" id="author">
 	
     <link type="text/css" rel="stylesheet" href="soundgames.css">
-	
+    <style>
+    img {
+        width: 100%;
+        height: auto;
+    }
+    </style>
     <script src="ws-functions.js"></script> <!-- websocket functions -->
     
     <script defer="defer">
@@ -122,7 +127,7 @@
 
    <br>
 	<br>
-	<table style="width:100%">
+	<table style="width:95%" border="0" bordercolor="white">
 	<tr  style="text-align:center">
 		<td></td>
 		<td>
@@ -144,7 +149,7 @@
 	</tr>
 	</table>
 	<br>
-	<table style="width:95%">
+	<table style="width:95%" border="0" bordercolor="white">
 		<tr  style="text-align:center">
 			<td> <input id="water" value="water" name="sound" type="radio" checked> Waterdrops</td>
 			<td> <input id="stones" value="stones" name="sound" type="radio"> Stones</td>
