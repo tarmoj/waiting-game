@@ -23,7 +23,7 @@
 	{
 		writeToScreen("state: disconnected\n");
 		document.myform.connectButton.disabled = false;
-		document.myform.sendButton.disabled = true;
+		//document.myform.sendButton.disabled = true;
 	}
 
 	
@@ -33,7 +33,7 @@
 		writeToScreen('error (' + document.myform.url.value + ') ' + evt.data + '\n');
 		websocket.close();
 		connectButton.disabled = false;
-		document.myform.sendButton.disabled = true;
+		//document.myform.sendButton.disabled = true;
 	}
 
 	function doSend(message)
