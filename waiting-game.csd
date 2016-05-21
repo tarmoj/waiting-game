@@ -9,13 +9,13 @@ ksmps = 8
 nchnls = 2
 0dbfs = 1
 
-chnset 0.6, "volume"
+chnset 0.9, "volume"
 
 ga1 init 0
 ga2 init 0
 
 alwayson "reverb_"
- scoreline_i  {{ i "play" 0 0.5 "sounds/stones/stone01.wav" 0.5 }}
+; scoreline_i  {{ i "play" 0 0.5 "sounds/stones/stone01.wav" 0.5 }}
 instr play
 	
 	
@@ -33,39 +33,56 @@ instr play
 endin
 
 ; schedule "flute",0,5
-giFluteFreqs ftgen 0,0,16,-2,1,2,3,4,5,6,7,8
-giFluteAmps ftgen 0,0,16,-2, 1,0.5,0.3,0.2,0.1,0.05,0.03,0.02
+;giFluteFreqs ftgen 0,0,16,-2,1,2,3,4,5,6,7,8
+;giFluteAmps ftgen 0,0,16,-2, 1,0.5,0.3,0.2,0.1,0.05,0.03,0.02
 instr flute
 	ipan = p4
-	iamp = 0.5
-	; TODO: tämber muutus ajas -  chebyshev?
+	iamp = 0.5 + birnd:i(0.1)
+
 	kline line 1,p3,0
-	anoise = pinkish(rnd(0.03))
-	anoise butterlp anoise*kline, random:i(1000,8000) ; somewhat different noise, decay during note
-	ioct = int(random:i(1,2.99))
-	ideviation = cent(random:i(0,40)) ; allow higher since in a=440
-	iattack random 0.05,1
-	idecay = iattack * random:i(0.7,1.5)
-	isustain random 0.3,0.8
-	print ioct, ideviation, ipan
-	ifreq = cpspch(5.05)*ioct*ideviation ; fis, with some deviation
-	aenv adsr iattack,idecay,isustain,p3/2
-	;asig adsynt2 0.3,ifreq, -1, giFluteFreqs, giFluteAmps, 8
 	
-	asig poscil 1, ifreq
-	kh1 = 0.2+rnd:i(0.8) ;
-	kh2 = rnd:i(0.5) ;0.5 + jspline:k(0.2,0.5,2) ; add some variation to specter
+	iattack random 0.05,0.1
+	idecay = iattack * random:i(0.7,1.5)
+	isustain random 0.5,0.7 ; for flute sound
+	inoisesustain random 0.01, 0.1	
+	irelease = p3/4	
+	anoiseenv adsr iattack,idecay*2, inoisesustain, irelease
+	;anoiseenv adsr 0.05,0.1, inoisesustain, irelease
+	asoundenv linen iamp, (iattack + idecay)*3, p3, irelease
+	anoise2env linen iamp, (iattack + idecay)/2, p3, irelease
+	
+	ioct = int(random:i(1,2.99))
+	ideviation = cent(random:i(-20,20)) ; allow higher since in a=440
+	ifreq = (cpspch(5.05)+1)*ioct*ideviation  ; fis, with some deviation; +2 to bring up a bit
+	print ioct, ideviation, ipan, ifreq
+	
+	; flute tone
+	asig poscil 1, ifreq+rnd(0.005);jspline:k(0.1,0.2,2) ; some variation to sound
+	kexpdecay expon 1,p3,0.0001
+	kh1 = 0.7+rnd:i(0.2) ;
+	kh2 = 0.6+rnd:i(0.3) ;0.5 + jspline:k(0.2,0.5,2) ; add some variation to specter
 	;printk2 kh2  
-	kh3 =rnd:i(0.4);0.3 + jspline:k(0.1,0.5,2)
-	kh4 =rnd:i(0.3)*kline ;0.2 + jspline:k(0.05,0.5,2)
-	kh5 =rnd:i(0.2)*kline
-	kh6 =rnd:i(0.1)*kline
+	kh3 =(0.1+rnd:i(0.1))*kexpdecay ;bring down upper harmonics
+	kh4 =rnd:i(0.1)*kexpdecay 
+	kh5 =rnd:i(0.08)*kexpdecay
+	kh6 =rnd:i(0.04)*kexpdecay
 
 		
 	asig chebyshevpoly asig, 0, kh1, kh2, kh3, kh4, kh5,kh6
 	
+	; noise
 	
-	aout = (anoise+asig*0.3) * aenv*iamp
+	anoise1 = pinkish(anoiseenv*0.01) ;random:i(0.01,0.03)
+	anoise1 butterhp anoise1, 200
+	;anoise butterlp anoise, linseg:k(10000,(iattack + idecay),ifreq*2)
+		
+	anoise2 pinkish anoise2env *random:i(0.3,0.5)
+	anoise3 butterbp anoise2, ifreq, ifreq/4 ; noise around th pitch
+	anoise4  butterbp anoise2, ifreq*4, ifreq ; noise above th pitch
+	anoise = (anoise3+anoise4)*0.5 ; + anoise1
+	
+	aout = (anoise + asig*asoundenv ) *iamp
+	;dispfft aout*10, .1, 1024
 	aL, aR pan2 aout,ipan
 	;outs aL, aR
 	ga1 += aL
@@ -98,8 +115,8 @@ endin
  <objectName/>
  <x>0</x>
  <y>0</y>
- <width>416</width>
- <height>371</height>
+ <width>445</width>
+ <height>660</height>
  <visible>true</visible>
  <uuid/>
  <bgcolor mode="nobackground">
@@ -107,7 +124,7 @@ endin
   <g>255</g>
   <b>255</b>
  </bgcolor>
- <bsbObject type="BSBButton" version="2">
+ <bsbObject version="2" type="BSBButton">
   <objectName>flute</objectName>
   <x>41</x>
   <y>34</y>
@@ -122,11 +139,11 @@ endin
   <stringvalue/>
   <text>flute</text>
   <image>/</image>
-  <eventLine>i "flute" 0 15</eventLine>
+  <eventLine>i "flute" 0  5 0.5</eventLine>
   <latch>false</latch>
-  <latched>false</latched>
+  <latched>true</latched>
  </bsbObject>
- <bsbObject type="BSBScope" version="2">
+ <bsbObject version="2" type="BSBScope">
   <objectName/>
   <x>66</x>
   <y>221</y>
@@ -143,6 +160,26 @@ endin
   <dispx>1.00000000</dispx>
   <dispy>1.00000000</dispy>
   <mode>0.00000000</mode>
+ </bsbObject>
+ <bsbObject version="2" type="BSBGraph">
+  <objectName/>
+  <x>95</x>
+  <y>510</y>
+  <width>350</width>
+  <height>150</height>
+  <uuid>{548ba2f4-40d8-4535-9fcc-bc0aa699e27b}</uuid>
+  <visible>true</visible>
+  <midichan>0</midichan>
+  <midicc>-3</midicc>
+  <value>0</value>
+  <objectName2/>
+  <zoomx>1.00000000</zoomx>
+  <zoomy>1.00000000</zoomy>
+  <dispx>1.00000000</dispx>
+  <dispy>1.00000000</dispy>
+  <modex>lin</modex>
+  <modey>lin</modey>
+  <all>true</all>
  </bsbObject>
 </bsbPanel>
 <bsbPresets>
