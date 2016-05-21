@@ -39,6 +39,7 @@ private slots:
 
 	void on_checkBox_toggled(bool checked);
 
+
 private:
 	Ui::WaitingWindow *ui;
 	CsEngine *cs;
