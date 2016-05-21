@@ -17,6 +17,8 @@ WaitingWindow::WaitingWindow(QWidget *parent) :
 	wsServer->sticksActive = ui->stonesCheckBox->isChecked();
 	wsServer->windActive = ui->windCheckBox->isChecked();
 	wsServer->fluteActive = ui->fluteCheckBox->isChecked();
+	labels << ui->waterCountLAbel << ui->sticksCountLabel << ui->stonesCountLabel << ui->windCountLabel << ui->fluteCoutLabel;
+	connect(wsServer, SIGNAL(eventCountChanged(int,int)), this, SLOT(setCounterLabel(int,int)) );
 
 }
 
@@ -41,6 +43,13 @@ void WaitingWindow::closeEvent(QCloseEvent *event)
 void WaitingWindow::setClientsCount(int clientsCount)
 {
 	ui->clientsCountLabel->setText(QString::number(clientsCount));
+}
+
+void WaitingWindow::setCounterLabel(int labelIndex, int number)
+{
+	if (labelIndex>=0 && labelIndex<=labels.count()) {
+		labels[labelIndex]->setText(QString::number(number));
+	}
 }
 
 

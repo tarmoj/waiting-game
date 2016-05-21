@@ -22,6 +22,7 @@ WsServer::WsServer(quint16 port, QObject *parent) :
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WsServer::closed);
     }
 	onlyOneEventAllowed = false;
+	emptyIPs(); // reset counters and empty arrays
 }
 
 
@@ -69,6 +70,7 @@ void WsServer::processTextMessage(QString message)
 				if (!fluteIPs.contains(senderIP)) {
 					fluteIPs.append(senderIP);
 					pClient->sendTextMessage("set flute disable");
+					emit eventCountChanged(FLUTE, ++eventCounter[FLUTE]); // increase the counter and send signal to UI
 				} else {
 					qDebug()<<"Second try from: " << senderIP;
 					return;
@@ -79,15 +81,19 @@ void WsServer::processTextMessage(QString message)
 			if (onlyOneEventAllowed) {
 				if (type=="water" && !waterIPs.contains(senderIP)) {
 					waterIPs.append(senderIP);
+					emit eventCountChanged(WATER, ++eventCounter[WATER]);
 					pClient->sendTextMessage("set water disable");
 				} else if (type=="stones" && !stoneIPs.contains(senderIP)) {
 					stoneIPs.append(senderIP);
+					emit eventCountChanged(STONES, ++eventCounter[STONES]);
 					pClient->sendTextMessage("set stones disable");
 				} else if (type=="sticks" && !stickIPs.contains(senderIP)) {
 					stickIPs.append(senderIP);
+					emit eventCountChanged(STICKS, ++eventCounter[STICKS]);
 					pClient->sendTextMessage("set sticks disable");
 				} else if (type=="wind" && !windIPs.contains(senderIP)) {
 					windIPs.append(senderIP);
+					emit eventCountChanged(WIND, ++eventCounter[WIND]);
 					pClient->sendTextMessage("set wind disable");
 				} else {
 					qDebug()<<"Seems like second try from: " << senderIP;
@@ -180,5 +186,9 @@ void WsServer::emptyIPs()
 	waterIPs.clear();
 	stoneIPs.clear();  stickIPs.clear();
 	windIPs.clear(); fluteIPs.clear();
+	for (int i=0;i<5;i++) {
+		eventCounter[i]=0;
+		emit eventCountChanged(i, 0);
+	}
 }
 

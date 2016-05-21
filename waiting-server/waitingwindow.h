@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 #include <QCloseEvent>
+#include <QLabel>
 
 namespace Ui {
 class WaitingWindow;
@@ -23,6 +24,7 @@ public:
 public slots:
 	void on_volumeSlider_valueChanged(int value);
 	void setClientsCount(int clientsCount);
+	void setCounterLabel(int labelIndex, int number);
 
 private slots:
 	void on_waterdropCheckBox_toggled(bool checked);
@@ -41,6 +43,7 @@ private:
 	Ui::WaitingWindow *ui;
 	CsEngine *cs;
 	WsServer *wsServer;
+	QList <QLabel *> labels;
 
 };
 

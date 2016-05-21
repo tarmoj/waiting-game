@@ -10,11 +10,11 @@
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
 
-#define LOW 0 // indexes for soundFie list
-#define  MEDIUM 1
-#define HIGH 2
-#define SHORT 0
-#define LONG 2
+#define WATER 0
+#define STICKS 1
+#define STONES 2
+#define WIND 3
+#define FLUTE 4
 
 class WsServer : public QObject
 {
@@ -33,6 +33,7 @@ Q_SIGNALS:
     void closed();
     void newConnection(int connectionsCount);
     void newEvent(QString eventString);
+	void eventCountChanged(int type, int number);
 
 
 private Q_SLOTS:
@@ -42,10 +43,12 @@ private Q_SLOTS:
     void socketDisconnected();
 
 
+
 private:
     QWebSocketServer *m_pWebSocketServer;
 	QList<QWebSocket *> m_clients;
 	QStringList waterIPs, stoneIPs, stickIPs, windIPs, fluteIPs;
+	int eventCounter[5];
 	//void getFilenames();
 	//QHash<QString, int>  clientsHash;
 	//bool pauseIsOn;

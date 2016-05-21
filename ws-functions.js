@@ -16,13 +16,14 @@
 	{
 		writeToScreen("connected\n");
 		document.myform.connectButton.disabled = true;
-		//document.myform.sendButton.disabled = false;
+		document.myform.connectButton.innerHTML="Connected";
 	}
 
 	function onClose(evt)
 	{
 		writeToScreen("state: disconnected\n");
 		document.myform.connectButton.disabled = false;
+                document.myform.connectButton.innerHTML="Connect";
 		//document.myform.sendButton.disabled = true;
 	}
 
@@ -33,6 +34,7 @@
 		writeToScreen('error (' + document.myform.url.value + ') ' + evt.data + '\n');
 		websocket.close();
 		connectButton.disabled = false;
+                document.myform.connectButton.innerHTML="Connect";
 		//document.myform.sendButton.disabled = true;
 	}
 

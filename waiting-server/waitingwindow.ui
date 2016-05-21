@@ -74,42 +74,12 @@
      <rect>
       <x>20</x>
       <y>110</y>
-      <width>124</width>
-      <height>156</height>
+      <width>245</width>
+      <height>184</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QCheckBox" name="waterdropCheckBox">
-       <property name="text">
-        <string>Waterdro&amp;ps</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="stonesCheckBox">
-       <property name="text">
-        <string>Stones</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="stickCheckBox">
-       <property name="text">
-        <string>Stic&amp;ks</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
       <widget class="QCheckBox" name="windCheckBox">
        <property name="text">
         <string>Wind</string>
@@ -119,13 +89,78 @@
        </property>
       </widget>
      </item>
-     <item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="stonesCheckBox">
+       <property name="text">
+        <string>Stones</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
       <widget class="QCheckBox" name="fluteCheckBox">
        <property name="text">
         <string>Flute</string>
        </property>
        <property name="checked">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="stickCheckBox">
+       <property name="text">
+        <string>Stic&amp;ks</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="waterdropCheckBox">
+       <property name="text">
+        <string>Waterdro&amp;ps</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="waterCountLAbel">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="sticksCountLabel">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="stonesCountLabel">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="windCountLabel">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="fluteCoutLabel">
+       <property name="text">
+        <string>0</string>
        </property>
       </widget>
      </item>
