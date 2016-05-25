@@ -37,7 +37,7 @@ endin
 ;giFluteAmps ftgen 0,0,16,-2, 1,0.5,0.3,0.2,0.1,0.05,0.03,0.02
 instr flute
 	ipan = p4
-	iamp = 0.5 + birnd:i(0.1)
+	iamp = 0.2 + birnd:i(0.1)
 
 	kline line 1,p3,0
 	
@@ -45,11 +45,18 @@ instr flute
 	idecay = iattack * random:i(0.7,1.5)
 	isustain random 0.5,0.7 ; for flute sound
 	inoisesustain random 0.01, 0.1	
-	irelease = p3/4	
+	irelease = p3/2	
 	anoiseenv adsr iattack,idecay*2, inoisesustain, irelease
+	; it is a big mess with envelopes, amplitudes etc...
 	;anoiseenv adsr 0.05,0.1, inoisesustain, irelease
-	asoundenv linen iamp, (iattack + idecay)*3, p3, irelease
-	anoise2env linen iamp, (iattack + idecay)/2, p3, irelease
+	;asoundenv linen iamp, (iattack + idecay)*3, p3, irelease
+	asoundenv adsr random:i(0.1,0.5), random:i(0.1,0.5), 0.6, irelease
+	asoundenv *=iamp
+	;anoise2env adsr iattack, idecay,iamp*0.8,idecay;
+	anoise2env = asoundenv*8
+	;asoundenv = anoise2env 
+	anoiseenv linen iamp, (iattack + idecay)/2, p3, irelease
+ 
 	
 	ioct = int(random:i(1,2.99))
 	ideviation = cent(random:i(-20,20)) ; allow higher since in a=440
@@ -76,12 +83,13 @@ instr flute
 	anoise1 butterhp anoise1, 200
 	;anoise butterlp anoise, linseg:k(10000,(iattack + idecay),ifreq*2)
 		
-	anoise2 pinkish anoise2env *random:i(0.3,0.5)
+	anoise2 pinkish anoise2env *random:i(0.4,0.8)
 	anoise3 butterbp anoise2, ifreq, ifreq/4 ; noise around th pitch
 	anoise4  butterbp anoise2, ifreq*4, ifreq ; noise above th pitch
 	anoise = (anoise3+anoise4)*0.5 ; + anoise1
 	
 	aout = (anoise + asig*asoundenv ) *iamp
+	;aout = anoise *iamp
 	;dispfft aout*10, .1, 1024
 	aL, aR pan2 aout,ipan
 	;outs aL, aR
@@ -94,7 +102,7 @@ instr reverb_
 	irvbamount = 0.01
 	ihdif = 0.6
 	idrywet = 0.5
-	iroomsize = 0.6
+	iroomsize = 0.4
 	kvolume chnget "volume"
 	kvolume port kvolume, 0.02, chnget:i("volume")
 	arvbL, arvbR freeverb ga1*irvbamount, ga2*irvbamount,iroomsize, ihdif 
@@ -124,7 +132,7 @@ endin
   <g>255</g>
   <b>255</b>
  </bgcolor>
- <bsbObject version="2" type="BSBButton">
+ <bsbObject type="BSBButton" version="2">
   <objectName>flute</objectName>
   <x>41</x>
   <y>34</y>
@@ -143,7 +151,7 @@ endin
   <latch>false</latch>
   <latched>true</latched>
  </bsbObject>
- <bsbObject version="2" type="BSBScope">
+ <bsbObject type="BSBScope" version="2">
   <objectName/>
   <x>66</x>
   <y>221</y>
@@ -161,7 +169,7 @@ endin
   <dispy>1.00000000</dispy>
   <mode>0.00000000</mode>
  </bsbObject>
- <bsbObject version="2" type="BSBGraph">
+ <bsbObject type="BSBGraph" version="2">
   <objectName/>
   <x>95</x>
   <y>510</y>
